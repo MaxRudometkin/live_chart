@@ -3,6 +3,8 @@ this file will keep last hour trade history in database
 query exchange API every 1 second and update database
 
 """
+import os
+
 import yaml
 import time
 import ccxt
@@ -123,10 +125,14 @@ if __name__ == '__main__':
     with open('config.yaml', 'r') as yaml_file:
         config = yaml.load(yaml_file)
 
+    print('read config - done')
+
     # database connection
-    engine = create_engine(config['database_url'])
+    engine = create_engine(os.environ['DATABASE_URL'])
     BASE.metadata.create_all(engine, checkfirst=True)
     session = sessionmaker(bind=engine)()
+
+    print('db connection - done')
 
     # create exchange
     exchange = ccxt.bitmex({
